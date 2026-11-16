@@ -1,0 +1,225 @@
+:root {
+  --bg: #f8fafc;
+  --panel: #ffffff;
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #e2e8f0;
+  --accent: #0e7490;
+  --danger: #e11d48;
+  --shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  width: 340px;
+  min-height: 280px;
+  background:
+    radial-gradient(120% 80% at 0% 0%, rgba(14, 116, 144, 0.12), transparent 55%),
+    radial-gradient(100% 70% at 100% 0%, rgba(225, 29, 72, 0.08), transparent 50%),
+    var(--bg);
+  color: var(--ink);
+  font: 13px/1.45 "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 14px 8px;
+}
+
+h1 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: 0.01em;
+}
+
+.sub {
+  margin: 2px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0.04em;
+}
+
+.btn {
+  appearance: none;
+  border: 0;
+  border-radius: 10px;
+  height: 34px;
+  padding: 0 12px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  background: #e2e8f0;
+  color: var(--ink);
+}
+
+.btn:hover {
+  filter: brightness(0.97);
+}
+
+.btn.primary {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 6px 16px rgba(225, 29, 72, 0.28);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--muted);
+  height: 28px;
+  padding: 0 8px;
+}
+
+.btn.ghost:hover {
+  background: #e2e8f0;
+  color: var(--ink);
+}
+
+.status {
+  margin: 0 14px 8px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: #fff1f2;
+  color: #9f1239;
+  font-size: 12px;
+}
+
+.hints {
+  margin: 0 14px 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+  display: grid;
+  gap: 4px;
+  box-shadow: var(--shadow);
+}
+
+kbd {
+  display: inline-block;
+  padding: 1px 5px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background: #f1f5f9;
+  font-size: 11px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.history {
+  padding: 0 14px 14px;
+}
+
+.history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.history-list {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: 72px 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 8px;
+  border-radius: 12px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.card img {
+  width: 72px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 8px;
+  background: #e2e8f0;
+}
+
+.card .meta {
+  min-width: 0;
+}
+
+.card .title {
+  font-weight: 700;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .note {
+  color: #0e7490;
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card .time {
+  color: var(--muted);
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+.thumb-fallback {
+  width: 72px;
+  height: 48px;
+  border-radius: 8px;
+  background: #e2e8f0;
+  display: grid;
+  place-items: center;
+  color: #64748b;
+  font-size: 11px;
+}
+
+.card .actions {
+  display: grid;
+  gap: 4px;
+}
+
+.card .actions button {
+  height: 26px;
+  padding: 0 8px;
+  border-radius: 7px;
+  border: 0;
+  background: #e2e8f0;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.card .actions button.danger {
+  background: #ffe4e6;
+  color: #9f1239;
+}
+
+.empty {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+}

@@ -1,0 +1,225 @@
+#pa-root {
+  all: initial;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483646;
+  pointer-events: none;
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans", "Microsoft YaHei",
+    sans-serif;
+}
+
+#pa-root * {
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+#pa-root .pa-canvas-wrap {
+  position: absolute;
+  inset: 0;
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+#pa-root .pa-canvas-wrap.pa-cursor-move {
+  cursor: move;
+}
+
+#pa-root .pa-canvas-wrap.pa-cursor-nwse {
+  cursor: nwse-resize;
+}
+
+#pa-root .pa-canvas-wrap.pa-cursor-default {
+  cursor: default;
+}
+
+#pa-root canvas.pa-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#pa-root .pa-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: min(980px, calc(100vw - 20px));
+  pointer-events: auto;
+  z-index: 2;
+}
+
+#pa-root .pa-dock.pa-hidden {
+  display: none;
+}
+
+#pa-root .pa-note {
+  width: 100%;
+  min-height: 40px;
+  max-height: 88px;
+  resize: vertical;
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.4;
+  outline: none;
+  box-shadow: 0 10px 30px rgba(2, 8, 23, 0.28);
+}
+
+#pa-root .pa-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 10px;
+  border-radius: 14px;
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  box-shadow: 0 12px 40px rgba(2, 8, 23, 0.45);
+  backdrop-filter: blur(10px);
+  user-select: none;
+}
+
+#pa-root .pa-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+#pa-root .pa-sep {
+  width: 1px;
+  height: 22px;
+  background: rgba(148, 163, 184, 0.35);
+  margin: 0 4px;
+}
+
+#pa-root .pa-btn {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 7px;
+  border-radius: 9px;
+  background: transparent;
+  color: #e2e8f0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+#pa-root .pa-btn:hover {
+  background: rgba(148, 163, 184, 0.22);
+  color: #fff;
+}
+
+#pa-root .pa-btn.pa-active {
+  background: #0e7490;
+  color: #fff;
+}
+
+#pa-root .pa-btn.pa-primary {
+  background: #e11d48;
+  color: #fff;
+  padding: 0 10px;
+}
+
+#pa-root .pa-btn.pa-primary:hover {
+  background: #be123c;
+}
+
+#pa-root .pa-btn.pa-ghost {
+  color: #94a3b8;
+}
+
+#pa-root .pa-btn.pa-card {
+  background: #0369a1;
+  color: #fff;
+}
+
+#pa-root .pa-btn.pa-card:hover {
+  background: #075985;
+}
+
+#pa-root .pa-btn.pa-long {
+  background: #7c3aed;
+  color: #fff;
+}
+
+#pa-root .pa-btn.pa-long:hover {
+  background: #6d28d9;
+}
+
+#pa-root .pa-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  padding: 0;
+}
+
+#pa-root .pa-swatch.pa-active {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px rgba(14, 116, 144, 0.9);
+}
+
+#pa-root .pa-toast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.94);
+  color: #f8fafc;
+  font-size: 13px;
+  font-weight: 600;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 3;
+  box-shadow: 0 8px 24px rgba(2, 8, 23, 0.35);
+  max-width: min(560px, calc(100vw - 32px));
+  text-align: center;
+}
+
+#pa-root .pa-toast.pa-show {
+  opacity: 1;
+}
+
+#pa-root .pa-text-input {
+  position: fixed;
+  min-width: 160px;
+  max-width: 360px;
+  padding: 8px 10px;
+  border: 2px solid #0e7490;
+  border-radius: 8px;
+  background: #fff;
+  color: #0f172a;
+  font-size: 16px;
+  font-weight: 600;
+  outline: none;
+  z-index: 4;
+  pointer-events: auto;
+  box-shadow: 0 8px 24px rgba(2, 8, 23, 0.2);
+}
+
+#pa-root .pa-file {
+  display: none;
+}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>PageAnnotate</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div>
+        <h1 data-i18n="extName">PageAnnotate</h1>
+        <p class="sub" data-i18n="popupSub">网页批注 · 截图复制</p>
+      </div>
+      <button id="btn-start" class="btn primary" type="button" data-i18n="btnStart">
+        开始批注
+      </button>
+    </header>
+
+    <p id="status" class="status" hidden></p>
+
+    <section class="hints">
+      <div data-i18n="hintShortcut">Alt+Shift+A 开关批注</div>
+      <div data-i18n="hintTools">号/线/长截图/延时 · Delete 删选中 · Ctrl+Z/Y</div>
+    </section>
+
+    <section class="history">
+      <div class="history-head">
+        <h2 data-i18n="historyTitle">本地历史</h2>
+        <button id="btn-clear" class="btn ghost" type="button" data-i18n="btnClear">
+          清空
+        </button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+      <p id="history-empty" class="empty" data-i18n="historyEmpty">
+        还没有截图。批注后点「复制」「下载」「卡片」或「长」会留在这里。
+      </p>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
