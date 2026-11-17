@@ -10,7 +10,10 @@
   ];
   const DELAYS = [0, 2, 3];
   const LONG_MAX_PX = 12000;
+  // Chrome caps captureVisibleTab (~2/sec). Stay under quota with margin.
+  const CAPTURE_MIN_INTERVAL_MS = 600;
   const t = (key, subs) => chrome.i18n.getMessage(key, subs) || key;
+  let lastCaptureAt = 0;
 
   const STATE = {
     active: false,
@@ -150,7 +153,6 @@
         <button class="pa-btn pa-ghost" data-action="delay" title="${esc(t("titleDelay"))}">${esc(delayLabel())}</button>
         <button class="pa-btn pa-primary" data-action="copy" title="${esc(t("titleCopy"))}">${esc(t("btnCopy"))}</button>
         <button class="pa-btn" data-action="download" title="${esc(t("titleDownload"))}">${esc(t("btnDownload"))}</button>
-        <button class="pa-btn pa-card" data-action="card" title="${esc(t("titleCard"))}">${esc(t("btnCard"))}</button>
         <button class="pa-btn pa-long" data-action="long" title="${esc(t("titleLong"))}">${esc(t("btnLong"))}</button>
         <button class="pa-btn pa-ghost" data-action="exit" title="${esc(t("titleExit"))}">${esc(t("btnExit"))}</button>
       </div>
@@ -257,9 +259,8 @@
     if (action === "redo") redo();
     if (action === "clear") clearAll();
     if (action === "delay") cycleDelay();
-    if (action === "copy") captureFull({ download: false, copy: true, card: false });
-    if (action === "download") captureFull({ download: true, copy: true, card: false });
-    if (action === "card") captureFull({ download: true, copy: true, card: true });
+    if (action === "copy") captureFull({ download: false, copy: true });
+    if (action === "download") captureFull({ download: true, copy: false });
     if (action === "long") captureLongPage();
     if (action === "exit") stop();
   }
@@ -404,7 +405,7 @@
     if (shape?.type === "region") {
       redraw();
       if (!isMeaningful(shape)) return showToast(t("toastRegionTooSmall"));
-      await captureRegion(shape, { download: false, copy: true, card: false });
+      await captureRegion(shape, { download: false, copy: true });
       return;
     }
     if (shape?.type === "mosaic") {
@@ -781,9 +782,8 @@
     await nextFrame();
     await nextFrame();
     try {
-      const raw = await chrome.runtime.sendMessage({ type: "PA_CAPTURE_RAW" });
-      if (!raw?.ok || !raw.dataUrl) throw new Error(raw?.error || t("toastCaptureFail"));
-      const cropped = await cropDataUrl(raw.dataUrl, rectShape);
+      const shot = await captureVisibleRaw();
+      const cropped = await cropDataUrl(shot, rectShape);
       const pixelated = await pixelateDataUrl(cropped, 12);
       await addImageShape(pixelated, { x: rectShape.x, y: rectShape.y, w: rectShape.w, h: rectShape.h }, "mosaicImage");
       showToast(t("toastMosaicDone"));
@@ -797,16 +797,15 @@
   async function waitCaptureDelay() {
     const sec = STATE.captureDelay;
     if (!sec) return;
-    if (STATE.root) STATE.root.style.opacity = "0";
+    hideAnnotateForCapture();
     for (let i = sec; i > 0; i--) {
       showToast(t("toastDelay", [String(i)]));
       await sleep(1000);
     }
-    if (STATE.root) STATE.root.style.opacity = "1";
   }
 
-  async function captureFull({ download, copy, card }) {
-    await runCapture({ download, copy, card, rect: null });
+  async function captureFull({ download, copy }) {
+    await runCapture({ download, copy, rect: null });
   }
 
   async function captureRegion(rectShape, opts) {
@@ -816,7 +815,7 @@
     });
   }
 
-  async function runCapture({ download, copy, card, rect }) {
+  async function runCapture({ download, copy, rect }) {
     if (STATE.busy) return;
     STATE.busy = true;
     removeTextInput();
@@ -832,18 +831,9 @@
       await nextFrame();
       await nextFrame();
 
-      const raw = await chrome.runtime.sendMessage({ type: "PA_CAPTURE_RAW" });
-      if (!raw?.ok || !raw.dataUrl) throw new Error(raw?.error || t("toastCaptureFail"));
-
-      let dataUrl = raw.dataUrl;
-      if (rect) dataUrl = await cropDataUrl(raw.dataUrl, rect);
-      if (card) {
-        dataUrl = await buildExportCard(dataUrl, {
-          title: document.title || "",
-          url: location.href || "",
-          note: STATE.noteEl?.value?.trim() || ""
-        });
-      }
+      const shot = await captureVisibleRaw();
+      let dataUrl = shot;
+      if (rect) dataUrl = await cropDataUrl(shot, rect);
 
       const saved = await chrome.runtime.sendMessage({
         type: "PA_COMMIT",
@@ -855,15 +845,14 @@
 
       if (copy) {
         await copyImage(dataUrl);
-        showToast(download ? t("toastCopiedDownload") : t("toastCopied"));
+        showToast(t("toastCopied"));
       } else if (download) {
         showToast(t("toastDownload"));
       }
-      dock?.classList.remove("pa-hidden");
     } catch (err) {
-      STATE.dock?.classList.remove("pa-hidden");
       showToast(err?.message || t("toastCaptureFail"));
     } finally {
+      showAnnotateAfterCapture();
       STATE.selectedId = prevSelected;
       STATE.busy = false;
       if (STATE.root) STATE.root.style.opacity = "1";
@@ -871,124 +860,233 @@
     }
   }
 
+  function findScrollRoot() {
+    const doc = document.scrollingElement || document.documentElement;
+    let best = {
+      el: doc,
+      delta: Math.max(0, doc.scrollHeight - doc.clientHeight),
+      viewportH: window.innerHeight
+    };
+
+    const nodes = document.body ? document.body.querySelectorAll("*") : [];
+    for (const el of nodes) {
+      if (el.closest && el.closest("#pa-root")) continue;
+      const style = window.getComputedStyle(el);
+      const oy = style.overflowY;
+      if (oy !== "auto" && oy !== "scroll" && oy !== "overlay") continue;
+      const delta = el.scrollHeight - el.clientHeight;
+      if (delta < 80) continue;
+      // Prefer the roomiest scroll area (ChatGPT-like apps scroll an inner panel).
+      const areaBoost = Math.min(el.clientWidth, window.innerWidth) / window.innerWidth;
+      const score = delta * (0.6 + 0.4 * areaBoost);
+      const bestScore = best.delta * (best.el === doc ? 0.85 : 1);
+      if (score > bestScore) {
+        best = { el: el, delta, viewportH: Math.max(1, el.clientHeight) };
+      }
+    }
+    return best;
+  }
+
+  function hideAnnotateForCapture() {
+    if (STATE.wrap) STATE.wrap.style.visibility = "hidden";
+    if (STATE.dock) STATE.dock.classList.add("pa-hidden");
+    hideToastForCapture();
+  }
+
+  function showAnnotateAfterCapture() {
+    if (STATE.wrap) STATE.wrap.style.visibility = "";
+    if (STATE.dock) STATE.dock.classList.remove("pa-hidden");
+    if (STATE.toastEl) STATE.toastEl.style.visibility = "";
+  }
+
+  function hideToastForCapture() {
+    const el = STATE.toastEl;
+    if (!el) return;
+    el.classList.remove("pa-show");
+    el.style.visibility = "hidden";
+  }
+
+  async function captureVisibleRaw() {
+    hideToastForCapture();
+    await nextFrame();
+    await nextFrame();
+
+    const now = Date.now();
+    const wait = CAPTURE_MIN_INTERVAL_MS - (now - lastCaptureAt);
+    if (wait > 0) await sleep(wait);
+
+    let lastError = "";
+    for (let attempt = 0; attempt < 4; attempt++) {
+      if (attempt > 0) {
+        if (STATE.toastEl) STATE.toastEl.style.visibility = "";
+        showToast(t("toastLongRetry", [String(attempt)]));
+        await sleep(CAPTURE_MIN_INTERVAL_MS * (attempt + 1));
+        hideToastForCapture();
+        await nextFrame();
+        await nextFrame();
+      }
+      lastCaptureAt = Date.now();
+      const raw = await chrome.runtime.sendMessage({ type: "PA_CAPTURE_RAW" });
+      if (raw?.ok && raw.dataUrl) return raw.dataUrl;
+
+      lastError = raw?.error || t("toastLongFail");
+      const quota =
+        /MAX_CAPTURE_VISIBLE_TAB|quota|rate/i.test(lastError) ||
+        /exceeds the MAX_CAPTURE/i.test(lastError);
+      if (!quota) break;
+    }
+    throw new Error(
+      /MAX_CAPTURE_VISIBLE_TAB|quota|rate|exceeds the MAX_CAPTURE/i.test(lastError)
+        ? t("toastLongQuota")
+        : lastError || t("toastLongFail")
+    );
+  }
+
   async function captureLongPage() {
     if (STATE.busy) return;
     STATE.busy = true;
     removeTextInput();
-    showToast(t("toastLongStart"));
+    STATE.selectedId = null;
+    redraw();
 
-    const root = STATE.root;
-    const scroller = document.scrollingElement || document.documentElement;
+    const { el: scroller, viewportH: scrollViewH } = findScrollRoot();
     const originalTop = scroller.scrollTop;
-    const viewportH = window.innerHeight;
     const viewportW = window.innerWidth;
-    const fullH = Math.max(scroller.scrollHeight, document.documentElement.scrollHeight, document.body?.scrollHeight || 0);
-    const targetH = Math.min(fullH, LONG_MAX_PX);
+    // Window capture height (CSS px) — stitching uses window viewport, not panel height.
+    const windowViewH = window.innerHeight;
+    const fullH = Math.max(scroller.scrollHeight, scroller.clientHeight);
+    const maxScroll = Math.max(0, Math.min(fullH, LONG_MAX_PX) - scrollViewH);
+    // Step inside the scrollable panel; keep modest overlap for sticky headers.
+    const step = Math.max(80, Math.floor(scrollViewH * 0.78));
 
     try {
-      if (root) root.style.display = "none";
+      hideAnnotateForCapture();
+      if (STATE.toastEl) STATE.toastEl.style.visibility = "";
+      showToast(t("toastLongStart"));
+      await sleep(700);
       await waitCaptureDelay();
-      if (root) root.style.display = "none";
+      hideAnnotateForCapture();
+
+      if (maxScroll < 40) {
+        const dataUrl = await captureVisibleRaw();
+        await finishLongCapture(dataUrl, { shortPage: true });
+        return;
+      }
 
       scroller.scrollTop = 0;
-      await sleep(280);
+      await sleep(450);
 
       const slices = [];
       let guard = 0;
-      while (guard++ < 80) {
+      let lastY = -1;
+      while (guard++ < 50) {
         const y = scroller.scrollTop;
-        await sleep(220);
-        const raw = await chrome.runtime.sendMessage({ type: "PA_CAPTURE_RAW" });
-        if (!raw?.ok || !raw.dataUrl) throw new Error(raw?.error || t("toastLongFail"));
-        slices.push({ dataUrl: raw.dataUrl, y });
+        if (STATE.toastEl) STATE.toastEl.style.visibility = "";
+        showToast(
+          t("toastLongProgress", [
+            String(Math.min(99, Math.round((y / Math.max(maxScroll, 1)) * 100)))
+          ])
+        );
+        await sleep(280);
+        const dataUrl = await captureVisibleRaw();
+        slices.push({ dataUrl, y, windowViewH });
 
-        if (y + viewportH >= targetH - 2) break;
-        const next = Math.min(targetH - viewportH, y + Math.max(40, viewportH - 48));
-        if (next <= y) break;
+        if (y >= maxScroll - 2) break;
+        const next = Math.min(maxScroll, y + step);
+        if (next <= y || next === lastY) break;
+        lastY = y;
         scroller.scrollTop = next;
-        await sleep(80);
+        await sleep(220);
         if (Math.abs(scroller.scrollTop - y) < 2) break;
       }
 
+      if (!slices.length) throw new Error(t("toastLongFail"));
+
       scroller.scrollTop = originalTop;
-      const dataUrl = await stitchSlices(slices, viewportW, targetH);
-      const saved = await chrome.runtime.sendMessage({
-        type: "PA_COMMIT",
-        dataUrl,
-        note: STATE.noteEl?.value?.trim() || "",
-        download: true
-      });
-      if (!saved?.ok) throw new Error(saved?.error || t("toastLongFail"));
-      await copyImage(dataUrl);
-      showToast(t("toastLongDone"));
+      await sleep(200);
+      if (STATE.toastEl) STATE.toastEl.style.visibility = "";
+      showToast(t("toastLongStitch"));
+      const stitched = await stitchSlices(slices, viewportW, windowViewH);
+      await finishLongCapture(stitched, { shortPage: false, slices: slices.length });
     } catch (err) {
       scroller.scrollTop = originalTop;
+      if (STATE.toastEl) STATE.toastEl.style.visibility = "";
       showToast(err?.message || t("toastLongFail"));
     } finally {
-      if (root) root.style.display = "";
+      showAnnotateAfterCapture();
       STATE.busy = false;
+      if (STATE.root) STATE.root.style.opacity = "1";
       redraw();
     }
   }
 
-  async function stitchSlices(slices, viewportW, targetH) {
+  async function finishLongCapture(dataUrl, { shortPage }) {
+    const saved = await chrome.runtime.sendMessage({
+      type: "PA_COMMIT",
+      dataUrl,
+      note: STATE.noteEl?.value?.trim() || "",
+      download: true
+    });
+    if (!saved?.ok) throw new Error(saved?.error || t("toastLongFail"));
+    await copyImage(dataUrl);
+    showAnnotateAfterCapture();
+
+    // Do NOT paste a tiny preview onto the annotate canvas — that looks blurry.
+    // Open the full-resolution image in a new tab instead.
+    try {
+      await chrome.runtime.sendMessage({ type: "PA_OPEN_IMAGE", dataUrl });
+    } catch {
+      // ignore popup/tab failures; download + clipboard already done
+    }
+
+    showToast(shortPage ? t("toastLongShort") : t("toastLongDone"));
+  }
+
+  async function stitchSlices(slices, viewportW, windowViewH) {
     if (!slices.length) throw new Error(t("toastLongFail"));
     const imgs = [];
     for (const s of slices) imgs.push(await loadImage(s.dataUrl));
+
     const dpr = imgs[0].naturalWidth / viewportW || 1;
+    const bands = [{ img: imgs[0], srcY: 0, srcH: imgs[0].naturalHeight }];
+
+    for (let i = 1; i < slices.length; i++) {
+      const img = imgs[i];
+      const deltaCss = Math.max(1, slices[i].y - slices[i - 1].y);
+      // Map scroll delta onto the captured window image.
+      const captureCssH = img.naturalHeight / dpr;
+      const srcY = Math.max(0, Math.round((captureCssH - deltaCss) * dpr));
+      const srcH = Math.min(img.naturalHeight - srcY, Math.round(deltaCss * dpr));
+      if (srcH > 0) bands.push({ img, srcY, srcH });
+    }
+
+    const totalH = bands.reduce((sum, b) => sum + b.srcH, 0);
     const canvas = document.createElement("canvas");
     canvas.width = imgs[0].naturalWidth;
-    canvas.height = Math.max(1, Math.round(targetH * dpr));
+    canvas.height = Math.max(1, totalH);
     const ctx = canvas.getContext("2d");
+    // Keep pixels crisp; we only copy integer bands 1:1.
+    ctx.imageSmoothingEnabled = false;
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
-    for (let i = 0; i < slices.length; i++) {
-      const destY = Math.round(slices[i].y * dpr);
-      ctx.drawImage(imgs[i], 0, destY);
+
+    let destY = 0;
+    for (const band of bands) {
+      ctx.drawImage(
+        band.img,
+        0,
+        band.srcY,
+        band.img.naturalWidth,
+        band.srcH,
+        0,
+        destY,
+        band.img.naturalWidth,
+        band.srcH
+      );
+      destY += band.srcH;
     }
+
     return canvas.toDataURL("image/png");
-  }
-
-  async function buildExportCard(shotDataUrl, { title, url, note }) {
-    const shot = await loadImage(shotDataUrl);
-    const pad = 24;
-    const contentW = Math.min(Math.max(shot.naturalWidth, 480), Math.max(shot.naturalWidth, 640));
-    const scale = contentW / shot.naturalWidth;
-    const shotH = Math.round(shot.naturalHeight * scale);
-    const metaLines = [];
-    if (title) metaLines.push(title);
-    metaLines.push(`${t("cardUrlLabel")}: ${url}`);
-    if (note) metaLines.push(`${t("cardNoteLabel")}: ${note}`);
-
-    const canvas = document.createElement("canvas");
-    const ctx = canvas.getContext("2d");
-    ctx.font = `600 16px "Segoe UI", "PingFang SC", "Hiragino Sans", "Microsoft YaHei", sans-serif`;
-    const wrapped = [];
-    for (const line of metaLines) wrapped.push(...wrapText(ctx, line, contentW));
-    const lineH = 24;
-    const headerH = pad * 2 + wrapped.length * lineH + 8;
-    canvas.width = contentW + pad * 2;
-    canvas.height = headerH + shotH + pad;
-    ctx.fillStyle = "#0f172a";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#f8fafc";
-    wrapped.forEach((line, i) => ctx.fillText(line, pad, pad + 16 + i * lineH));
-    ctx.drawImage(shot, pad, headerH, contentW, shotH);
-    return canvas.toDataURL("image/png");
-  }
-
-  function wrapText(ctx, text, maxWidth) {
-    const lines = [];
-    let current = "";
-    for (const ch of String(text)) {
-      const next = current + ch;
-      if (ctx.measureText(next).width > maxWidth && current) {
-        lines.push(current);
-        current = ch;
-      } else current = next;
-    }
-    if (current) lines.push(current);
-    return lines.length ? lines : [""];
   }
 
   async function cropDataUrl(dataUrl, rect) {

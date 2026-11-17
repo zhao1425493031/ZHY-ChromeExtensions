@@ -23,6 +23,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     PA_START_FROM_POPUP: handleStartFromPopup,
     PA_CAPTURE_RAW: () => handleCaptureRaw(sender),
     PA_COMMIT: () => handleCommit(sender, message),
+    PA_OPEN_IMAGE: () => handleOpenImage(message.dataUrl),
     PA_GET_HISTORY: handleGetHistory,
     PA_CLEAR_HISTORY: handleClearHistory,
     PA_DELETE_HISTORY: () => handleDeleteHistory(message.id)
@@ -59,6 +60,13 @@ async function handleCaptureRaw(sender) {
     format: "png"
   });
   return { dataUrl };
+}
+
+async function handleOpenImage(dataUrl) {
+  if (!dataUrl) throw new Error(i18n("toastCaptureFail"));
+  // Prefer opening the just-downloaded / full-resolution capture in a tab.
+  await chrome.tabs.create({ url: dataUrl, active: true });
+  return {};
 }
 
 async function handleCommit(sender, message) {

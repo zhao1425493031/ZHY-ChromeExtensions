@@ -1,7 +1,7 @@
 {
   "extName": { "message": "PageAnnotate" },
   "extDesc": {
-    "message": "注釈：ハイライト/モザイク/番号/直線/画像、範囲・縦長キャプチャ、遅延、カード出力。日英中。"
+    "message": "ページ注釈：ハイライト/モザイク/番号/直線/画像、範囲キャプチャとページ全体のスクロール撮影、遅延。日英中。"
   },
   "actionTitle": { "message": "PageAnnotate" },
   "cmdToggle": { "message": "注釈の開始 / 終了" },
@@ -10,11 +10,11 @@
   "btnClear": { "message": "クリア" },
   "hintShortcut": { "message": "Alt+Shift+A で注釈切替" },
   "hintTools": {
-    "message": "番号/直線/縦長/遅延 · Deleteで削除 · Ctrl+Z/Y"
+    "message": "コピー=クリップボードのみ · 保存=ファイルのみ · 全体スクロール=縦長"
   },
   "historyTitle": { "message": "ローカル履歴" },
   "historyEmpty": {
-    "message": "まだありません。コピー／保存／カード／縦長を使ってください。"
+    "message": "まだありません。コピー／保存／全体スクロール後にここに残ります。"
   },
   "btnCopy": { "message": "コピー" },
   "btnOpen": { "message": "開く" },
@@ -30,76 +30,84 @@
     "message": "このページでは注釈できません（内部ページやストアなど）"
   },
   "errNoTabLocate": { "message": "現在のタブを特定できません" },
-  "toolPen": { "message": "筆" },
-  "toolRect": { "message": "枠" },
-  "toolHighlight": { "message": "輝" },
-  "toolArrow": { "message": "矢" },
-  "toolLine": { "message": "線" },
-  "toolText": { "message": "字" },
-  "toolMarker": { "message": "番" },
-  "toolMosaic": { "message": "モ" },
-  "toolRegion": { "message": "範" },
-  "toolImage": { "message": "画" },
-  "toolSelect": { "message": "選" },
-  "titlePen": { "message": "ペン" },
-  "titleRect": { "message": "矩形" },
+  "toolPen": { "message": "ペン" },
+  "toolRect": { "message": "矩形" },
+  "toolHighlight": { "message": "ハイライト" },
+  "toolArrow": { "message": "矢印" },
+  "toolLine": { "message": "直線" },
+  "toolText": { "message": "文字" },
+  "toolMarker": { "message": "番号" },
+  "toolMosaic": { "message": "モザイク" },
+  "toolRegion": { "message": "範囲" },
+  "toolImage": { "message": "画像" },
+  "toolSelect": { "message": "選択" },
+  "titlePen": { "message": "ペンで描画" },
+  "titleRect": { "message": "矩形を描画" },
   "titleHighlight": { "message": "ハイライト" },
-  "titleArrow": { "message": "矢印" },
-  "titleLine": { "message": "直線" },
-  "titleText": { "message": "テキスト" },
-  "titleMarker": { "message": "番号マーカー" },
-  "titleMosaic": { "message": "モザイク" },
-  "titleRegion": { "message": "範囲キャプチャ" },
-  "titleImage": { "message": "画像挿入（または Ctrl+V）" },
-  "titleSelect": { "message": "選択 / 移動 / リサイズ" },
-  "btnUndo": { "message": "戻" },
-  "btnRedo": { "message": "進" },
-  "btnClearShort": { "message": "消" },
+  "titleArrow": { "message": "矢印を描画" },
+  "titleLine": { "message": "直線を描画" },
+  "titleText": { "message": "テキストを追加" },
+  "titleMarker": { "message": "番号マーカーを配置" },
+  "titleMosaic": { "message": "モザイク（ぼかし）" },
+  "titleRegion": { "message": "範囲を選んでキャプチャ" },
+  "titleImage": { "message": "画像を挿入（Ctrl+Vでも可）" },
+  "titleSelect": { "message": "選択して移動・リサイズ" },
+  "btnUndo": { "message": "元に戻す" },
+  "btnRedo": { "message": "やり直す" },
+  "btnClearShort": { "message": "全消去" },
   "btnDownload": { "message": "保存" },
-  "btnCard": { "message": "カード" },
-  "btnLong": { "message": "縦" },
-  "btnDelay": { "message": "遅$1s" },
+  "btnLong": { "message": "全体スクロール" },
+  "btnDelay": { "message": "遅延 $1秒" },
   "btnExit": { "message": "終了" },
   "titleUndo": { "message": "元に戻す" },
   "titleRedo": { "message": "やり直す" },
-  "titleClear": { "message": "すべて消去" },
-  "titleCopy": { "message": "キャプチャしてコピー" },
-  "titleDownload": { "message": "キャプチャして保存" },
-  "titleCard": { "message": "カード出力（メモ+URL）" },
-  "titleLong": { "message": "ページ全体の縦長キャプチャ" },
-  "titleDelay": { "message": "キャプチャ遅延（0/2/3秒）" },
-  "titleExit": { "message": "終了" },
+  "titleClear": { "message": "注釈をすべて消去" },
+  "titleCopy": { "message": "表示中の画面をクリップボードへコピー（保存しない）" },
+  "titleDownload": { "message": "表示中の画面をファイル保存（コピーしない）" },
+  "titleLong": { "message": "ページを自動スクロールして全体を撮影" },
+  "titleDelay": { "message": "キャプチャ遅延（0/2/3秒を切替）" },
+  "titleExit": { "message": "注釈を終了" },
   "titleWidth": { "message": "線の太さ" },
   "widthThin": { "message": "細" },
   "widthMid": { "message": "中" },
   "widthThick": { "message": "太" },
   "notePlaceholder": {
-    "message": "質問 / 説明（キャプチャと一緒に保存）"
+    "message": "質問 / 説明（履歴に一緒に保存）"
   },
   "textPlaceholder": {
     "message": "文字入力、Enter確定、Shift+Enter改行、Esc取消"
   },
   "toastStart": {
-    "message": "番=番号 線=直線 縦=縦長 · Deleteで選択削除"
+    "message": "コピー≠保存。「全体スクロール」はページを自動でスクロールします"
   },
-  "toastCopied": { "message": "クリップボードにコピーしました" },
-  "toastCopiedDownload": { "message": "コピーし、ダウンロードを開始しました" },
-  "toastDownload": { "message": "ダウンロードを開始しました" },
+  "toastCopied": { "message": "クリップボードにコピーしました（保存なし）" },
+  "toastDownload": { "message": "ダウンロードを開始しました（コピーなし）" },
   "toastCaptureFail": { "message": "キャプチャに失敗しました" },
   "toastRegionHint": { "message": "ドラッグして範囲を選択" },
   "toastMosaicHint": { "message": "ドラッグしてモザイク範囲を選択" },
   "toastSelectHint": { "message": "ドラッグで移動、角でリサイズ、Deleteで削除" },
   "toastMarkerHint": { "message": "クリックして番号を配置" },
   "toastLineHint": { "message": "ドラッグして直線を描画" },
-  "toastImageAdded": { "message": "画像を挿入しました。「選」で移動できます" },
+  "toastImageAdded": { "message": "画像を挿入しました。「選択」で移動できます" },
   "toastMosaicDone": { "message": "モザイクを追加しました" },
   "toastPasteNoImage": { "message": "クリップボードに画像がありません" },
   "toastRegionTooSmall": { "message": "範囲が小さすぎます。やり直してください" },
   "toastDelay": { "message": "$1秒後にキャプチャ…" },
-  "toastLongStart": { "message": "縦長キャプチャ中です。操作しないでください…" },
-  "toastLongDone": { "message": "縦長キャプチャ完了" },
-  "toastLongFail": { "message": "縦長キャプチャに失敗しました" },
-  "toastDeleted": { "message": "選択を削除しました" },
-  "cardNoteLabel": { "message": "説明" },
-  "cardUrlLabel": { "message": "ページ" }
+  "toastLongStart": {
+    "message": "ページ全体のスクロール撮影を開始します（制限回避のため少し遅くなります）…"
+  },
+  "toastLongProgress": { "message": "スクロール撮影中… $1%" },
+  "toastLongStitch": { "message": "画像を結合しています…" },
+  "toastLongRetry": { "message": "撮影頻度制限のため再試行中（$1）…" },
+  "toastLongQuota": {
+    "message": "ブラウザの撮影回数制限です。数秒待ってから「全体スクロール」を再度押してください"
+  },
+  "toastLongDone": {
+    "message": "全体キャプチャ完了：保存・コピー済み。新しいタブで原寸を開きました"
+  },
+  "toastLongShort": {
+    "message": "ほぼ1画面分：保存・コピー済み。新しいタブで開きました"
+  },
+  "toastLongFail": { "message": "スクロール撮影に失敗しました" },
+  "toastDeleted": { "message": "選択を削除しました" }
 }

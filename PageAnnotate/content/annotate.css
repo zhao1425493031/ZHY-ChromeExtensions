@@ -106,16 +106,17 @@
   appearance: none;
   border: 0;
   margin: 0;
-  min-width: 32px;
-  height: 32px;
-  padding: 0 7px;
+  min-width: 36px;
+  height: 34px;
+  padding: 0 10px;
   border-radius: 9px;
   background: transparent;
   color: #e2e8f0;
   cursor: pointer;
   font-size: 12px;
   font-weight: 700;
-  line-height: 1;
+  line-height: 1.1;
+  white-space: nowrap;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -145,15 +146,6 @@
 
 #pa-root .pa-btn.pa-ghost {
   color: #94a3b8;
-}
-
-#pa-root .pa-btn.pa-card {
-  background: #0369a1;
-  color: #fff;
-}
-
-#pa-root .pa-btn.pa-card:hover {
-  background: #075985;
 }
 
 #pa-root .pa-btn.pa-long {

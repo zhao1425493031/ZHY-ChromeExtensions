@@ -1,7 +1,7 @@
 {
   "extName": { "message": "PageAnnotate" },
   "extDesc": {
-    "message": "Annotate: highlight/mosaic/markers/lines/images, region & full-page capture, delay, export card. zh/en/ja."
+    "message": "Annotate pages: highlight/mosaic/markers/lines/images, region & full-page scroll capture, delay. zh/en/ja."
   },
   "actionTitle": { "message": "PageAnnotate" },
   "cmdToggle": { "message": "Start / stop annotation" },
@@ -10,11 +10,11 @@
   "btnClear": { "message": "Clear" },
   "hintShortcut": { "message": "Alt+Shift+A toggles annotation" },
   "hintTools": {
-    "message": "Marker/Line/Long/Delay · Delete selected · Ctrl+Z/Y"
+    "message": "Copy=clipboard only · Save=file only · Scroll page=full capture"
   },
   "historyTitle": { "message": "Local history" },
   "historyEmpty": {
-    "message": "No captures yet. Use Copy, Download, Card, or Long."
+    "message": "No captures yet. Use Copy, Save, or Scroll page."
   },
   "btnCopy": { "message": "Copy" },
   "btnOpen": { "message": "Open" },
@@ -31,16 +31,16 @@
   },
   "errNoTabLocate": { "message": "Cannot locate the current tab" },
   "toolPen": { "message": "Pen" },
-  "toolRect": { "message": "Box" },
-  "toolHighlight": { "message": "Hi" },
-  "toolArrow": { "message": "Arr" },
-  "toolLine": { "message": "Ln" },
-  "toolText": { "message": "Txt" },
-  "toolMarker": { "message": "No." },
-  "toolMosaic": { "message": "Mos" },
-  "toolRegion": { "message": "Area" },
-  "toolImage": { "message": "Img" },
-  "toolSelect": { "message": "Sel" },
+  "toolRect": { "message": "Rect" },
+  "toolHighlight": { "message": "Highlight" },
+  "toolArrow": { "message": "Arrow" },
+  "toolLine": { "message": "Line" },
+  "toolText": { "message": "Text" },
+  "toolMarker": { "message": "Marker" },
+  "toolMosaic": { "message": "Mosaic" },
+  "toolRegion": { "message": "Region" },
+  "toolImage": { "message": "Image" },
+  "toolSelect": { "message": "Select" },
   "titlePen": { "message": "Pen" },
   "titleRect": { "message": "Rectangle" },
   "titleHighlight": { "message": "Highlight" },
@@ -54,52 +54,60 @@
   "titleSelect": { "message": "Select / move / resize" },
   "btnUndo": { "message": "Undo" },
   "btnRedo": { "message": "Redo" },
-  "btnClearShort": { "message": "Clr" },
+  "btnClearShort": { "message": "Clear" },
   "btnDownload": { "message": "Save" },
-  "btnCard": { "message": "Card" },
-  "btnLong": { "message": "Long" },
-  "btnDelay": { "message": "Dly $1s" },
+  "btnLong": { "message": "Scroll page" },
+  "btnDelay": { "message": "Delay $1s" },
   "btnExit": { "message": "Exit" },
   "titleUndo": { "message": "Undo" },
   "titleRedo": { "message": "Redo" },
   "titleClear": { "message": "Clear all" },
-  "titleCopy": { "message": "Capture and copy" },
-  "titleDownload": { "message": "Capture and download" },
-  "titleCard": { "message": "Export card (note + URL)" },
-  "titleLong": { "message": "Full-page long screenshot" },
+  "titleCopy": { "message": "Capture viewport to clipboard only" },
+  "titleDownload": { "message": "Capture viewport and download only" },
+  "titleLong": { "message": "Auto-scroll and stitch a full-page screenshot" },
   "titleDelay": { "message": "Capture delay (0/2/3s)" },
   "titleExit": { "message": "Exit" },
   "titleWidth": { "message": "Stroke width" },
-  "widthThin": { "message": "S" },
-  "widthMid": { "message": "M" },
-  "widthThick": { "message": "L" },
+  "widthThin": { "message": "Thin" },
+  "widthMid": { "message": "Med" },
+  "widthThick": { "message": "Thick" },
   "notePlaceholder": {
-    "message": "Question / note (saved with the capture)"
+    "message": "Question / note (saved with history)"
   },
   "textPlaceholder": {
     "message": "Type text, Enter to confirm, Shift+Enter newline, Esc cancel"
   },
   "toastStart": {
-    "message": "No.=marker Ln=line Long=full page · Delete removes selection"
+    "message": "Copy ≠ Save. “Scroll page” auto-scrolls to stitch a long shot"
   },
-  "toastCopied": { "message": "Copied to clipboard" },
-  "toastCopiedDownload": { "message": "Copied and downloading" },
-  "toastDownload": { "message": "Download started" },
+  "toastCopied": { "message": "Copied to clipboard (not downloaded)" },
+  "toastDownload": { "message": "Download started (not copied)" },
   "toastCaptureFail": { "message": "Capture failed" },
   "toastRegionHint": { "message": "Drag to select a capture region" },
   "toastMosaicHint": { "message": "Drag to select a mosaic region" },
   "toastSelectHint": { "message": "Drag to move; corner resize; Delete to remove" },
   "toastMarkerHint": { "message": "Click to place numbered markers" },
   "toastLineHint": { "message": "Drag to draw a straight line" },
-  "toastImageAdded": { "message": "Image inserted — use Sel to move/resize" },
+  "toastImageAdded": { "message": "Image inserted — use Select to move/resize" },
   "toastMosaicDone": { "message": "Mosaic applied" },
   "toastPasteNoImage": { "message": "No image in clipboard" },
   "toastRegionTooSmall": { "message": "Region too small — drag again" },
   "toastDelay": { "message": "Capturing in $1s…" },
-  "toastLongStart": { "message": "Capturing full page — don’t interact…" },
-  "toastLongDone": { "message": "Long screenshot done" },
-  "toastLongFail": { "message": "Long screenshot failed" },
-  "toastDeleted": { "message": "Selection deleted" },
-  "cardNoteLabel": { "message": "Note" },
-  "cardUrlLabel": { "message": "Page" }
+  "toastLongStart": {
+    "message": "Starting full-page scroll capture (slower to avoid browser rate limits)…"
+  },
+  "toastLongProgress": { "message": "Scrolling capture… $1%" },
+  "toastLongStitch": { "message": "Stitching the long image…" },
+  "toastLongRetry": { "message": "Hit capture rate limit, retrying ($1)…" },
+  "toastLongQuota": {
+    "message": "Browser limited capture rate. Wait a few seconds, then try Scroll page again"
+  },
+  "toastLongDone": {
+    "message": "Full-page done: downloaded, copied, opened full-size in a new tab"
+  },
+  "toastLongShort": {
+    "message": "About one screen: downloaded, copied, opened in a new tab"
+  },
+  "toastLongFail": { "message": "Scroll capture failed" },
+  "toastDeleted": { "message": "Selection deleted" }
 }

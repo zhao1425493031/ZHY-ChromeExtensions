@@ -1,7 +1,7 @@
 {
   "extName": { "message": "PageAnnotate" },
   "extDesc": {
-    "message": "网页批注：高亮/马赛克/编号/直线/贴图，区域与长截图，延时截图，导出卡片。中英日。"
+    "message": "网页批注：高亮/马赛克/编号/直线/贴图，区域截图与整页滚动长截图，延时截图。中英日。"
   },
   "actionTitle": { "message": "PageAnnotate" },
   "cmdToggle": { "message": "开始 / 结束批注" },
@@ -10,11 +10,11 @@
   "btnClear": { "message": "清空" },
   "hintShortcut": { "message": "Alt+Shift+A 开关批注" },
   "hintTools": {
-    "message": "号/线/长截图/延时 · Delete 删选中 · Ctrl+Z/Y"
+    "message": "复制=仅剪贴板 · 下载=仅文件 · 整页滚动=长截图"
   },
   "historyTitle": { "message": "本地历史" },
   "historyEmpty": {
-    "message": "还没有截图。批注后点「复制」「下载」「卡片」或「长」会留在这里。"
+    "message": "还没有截图。批注后点「复制」「下载」或「整页滚动」会留在这里。"
   },
   "btnCopy": { "message": "复制" },
   "btnOpen": { "message": "打开" },
@@ -30,17 +30,17 @@
     "message": "当前页面无法批注（浏览器内部页或商店页）"
   },
   "errNoTabLocate": { "message": "无法定位当前标签页" },
-  "toolPen": { "message": "笔" },
-  "toolRect": { "message": "框" },
-  "toolHighlight": { "message": "亮" },
-  "toolArrow": { "message": "箭" },
-  "toolLine": { "message": "线" },
-  "toolText": { "message": "字" },
-  "toolMarker": { "message": "号" },
-  "toolMosaic": { "message": "码" },
-  "toolRegion": { "message": "区" },
-  "toolImage": { "message": "图" },
-  "toolSelect": { "message": "选" },
+  "toolPen": { "message": "画笔" },
+  "toolRect": { "message": "矩形" },
+  "toolHighlight": { "message": "高亮" },
+  "toolArrow": { "message": "箭头" },
+  "toolLine": { "message": "直线" },
+  "toolText": { "message": "文字" },
+  "toolMarker": { "message": "编号" },
+  "toolMosaic": { "message": "马赛克" },
+  "toolRegion": { "message": "区域" },
+  "toolImage": { "message": "插图" },
+  "toolSelect": { "message": "选择" },
   "titlePen": { "message": "画笔" },
   "titleRect": { "message": "矩形" },
   "titleHighlight": { "message": "高亮" },
@@ -52,21 +52,19 @@
   "titleRegion": { "message": "区域截图" },
   "titleImage": { "message": "插入图片（或 Ctrl+V）" },
   "titleSelect": { "message": "选择 / 拖动 / 缩放" },
-  "btnUndo": { "message": "撤" },
-  "btnRedo": { "message": "重" },
-  "btnClearShort": { "message": "清" },
+  "btnUndo": { "message": "撤销" },
+  "btnRedo": { "message": "重做" },
+  "btnClearShort": { "message": "清空" },
   "btnDownload": { "message": "下载" },
-  "btnCard": { "message": "卡片" },
-  "btnLong": { "message": "长" },
-  "btnDelay": { "message": "延$1s" },
+  "btnLong": { "message": "整页滚动" },
+  "btnDelay": { "message": "延时 $1秒" },
   "btnExit": { "message": "退出" },
   "titleUndo": { "message": "撤销" },
   "titleRedo": { "message": "重做" },
   "titleClear": { "message": "清空" },
-  "titleCopy": { "message": "截图并复制" },
-  "titleDownload": { "message": "截图并下载" },
-  "titleCard": { "message": "导出卡片（含说明与网址）" },
-  "titleLong": { "message": "整页长截图（滚动拼接）" },
+  "titleCopy": { "message": "截取当前画面，仅复制到剪贴板" },
+  "titleDownload": { "message": "截取当前画面，仅下载文件" },
+  "titleLong": { "message": "滚动拼接整页长截图（会自动滚动页面）" },
   "titleDelay": { "message": "截图延时（点击切换 0/2/3 秒）" },
   "titleExit": { "message": "退出" },
   "titleWidth": { "message": "线宽" },
@@ -74,32 +72,40 @@
   "widthMid": { "message": "中" },
   "widthThick": { "message": "粗" },
   "notePlaceholder": {
-    "message": "输入问题 / 说明（会随截图一起保存）"
+    "message": "输入问题 / 说明（会随截图一起保存到历史）"
   },
   "textPlaceholder": {
     "message": "输入文字，Enter 确认，Shift+Enter 换行，Esc 取消"
   },
   "toastStart": {
-    "message": "号=编号 线=直线 长=长截图 延=延时 · Delete 删除选中"
+    "message": "复制≠下载；「整页滚动」会自动滚动页面拼接长图"
   },
-  "toastCopied": { "message": "已复制到剪贴板" },
-  "toastCopiedDownload": { "message": "已复制并开始下载" },
-  "toastDownload": { "message": "已开始下载" },
+  "toastCopied": { "message": "已复制到剪贴板（未下载）" },
+  "toastDownload": { "message": "已开始下载（未复制）" },
   "toastCaptureFail": { "message": "截图失败" },
   "toastRegionHint": { "message": "拖拽选择截图区域" },
   "toastMosaicHint": { "message": "拖拽选择马赛克区域" },
   "toastSelectHint": { "message": "点击拖动；右下角缩放；Delete 删除" },
   "toastMarkerHint": { "message": "点击页面放置编号" },
   "toastLineHint": { "message": "拖拽绘制直线" },
-  "toastImageAdded": { "message": "已插入图片，可用「选」拖动缩放" },
+  "toastImageAdded": { "message": "已插入图片，可用「选择」拖动缩放" },
   "toastMosaicDone": { "message": "已添加马赛克" },
   "toastPasteNoImage": { "message": "剪贴板里没有图片" },
   "toastRegionTooSmall": { "message": "选区太小，请重新拖选" },
   "toastDelay": { "message": "$1 秒后截图…" },
-  "toastLongStart": { "message": "正在长截图，请勿操作页面…" },
-  "toastLongDone": { "message": "长截图完成" },
-  "toastLongFail": { "message": "长截图失败" },
-  "toastDeleted": { "message": "已删除选中" },
-  "cardNoteLabel": { "message": "说明" },
-  "cardUrlLabel": { "message": "页面" }
+  "toastLongStart": { "message": "开始整页滚动截图，请勿操作（稍慢是为避免浏览器限流）…" },
+  "toastLongProgress": { "message": "整页滚动截图中… $1%" },
+  "toastLongStitch": { "message": "正在拼接长图…" },
+  "toastLongRetry": { "message": "截图太快被限制，重试中（$1）…" },
+  "toastLongQuota": {
+    "message": "浏览器限制了截图频率，请稍等几秒再点「整页滚动」"
+  },
+  "toastLongDone": {
+    "message": "整页长截图完成：已下载、已复制，并在新标签打开原图"
+  },
+  "toastLongShort": {
+    "message": "页面几乎只有一屏：已下载、已复制，并在新标签打开"
+  },
+  "toastLongFail": { "message": "整页滚动截图失败" },
+  "toastDeleted": { "message": "已删除选中" }
 }

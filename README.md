@@ -26,7 +26,7 @@ ZHY-ChromeExtensions/
 
 | 文件夹 | 插件 | 状态 |
 |--------|------|------|
-| [`PageAnnotate`](PageAnnotate/) | 批注 / 编号直线 / 长截图延时 / 卡片 / 中英日 | **v0.4 可用** |
+| [`PageAnnotate`](PageAnnotate/) | 批注 / 整页滚动长截图 / 复制≠下载 / 中英日 | **v0.4.2** |
 | `ColorPicker` | 颜色提取（页面色板 + 吸管） | **不做**（市场已饱和） |
 | `WorkSession` | 按项目会话（规划） | 待开工 |
 | `EnvSwitch` | 多环境切换（规划） | 待开工 |
