@@ -72,6 +72,8 @@
     window.addEventListener("resize", onResize);
     window.addEventListener("keydown", onKeyDown, true);
     window.addEventListener("paste", onPaste, true);
+    // Capture scroll from window AND nested scrollers (height may change).
+    document.addEventListener("scroll", onScrollOrLayout, true);
     showToast(t("toastStart"));
   }
 
@@ -81,6 +83,7 @@
     window.removeEventListener("resize", onResize);
     window.removeEventListener("keydown", onKeyDown, true);
     window.removeEventListener("paste", onPaste, true);
+    document.removeEventListener("scroll", onScrollOrLayout, true);
     removeTextInput();
     STATE.root?.remove();
     Object.assign(STATE, {
@@ -127,10 +130,23 @@
     toolbar.innerHTML = `
       <div class="pa-group" data-tools>
         <button class="pa-btn pa-active" data-tool="pen" title="${esc(t("titlePen"))}">${esc(t("toolPen"))}</button>
-        <button class="pa-btn" data-tool="rect" title="${esc(t("titleRect"))}">${esc(t("toolRect"))}</button>
+        <div class="pa-menu-wrap">
+          <button class="pa-btn" type="button" data-menu="shape" title="${esc(t("titleShapeMenu"))}">${esc(t("toolShape"))} ▾</button>
+          <div class="pa-flyout" data-flyout="shape" hidden>
+            <button class="pa-btn" type="button" data-tool="rect" title="${esc(t("titleRect"))}">${esc(t("toolRect"))}</button>
+            <button class="pa-btn" type="button" data-tool="circle" title="${esc(t("titleCircle"))}">${esc(t("toolCircle"))}</button>
+            <button class="pa-btn" type="button" data-tool="ellipse" title="${esc(t("titleEllipse"))}">${esc(t("toolEllipse"))}</button>
+          </div>
+        </div>
         <button class="pa-btn" data-tool="highlight" title="${esc(t("titleHighlight"))}">${esc(t("toolHighlight"))}</button>
-        <button class="pa-btn" data-tool="arrow" title="${esc(t("titleArrow"))}">${esc(t("toolArrow"))}</button>
-        <button class="pa-btn" data-tool="line" title="${esc(t("titleLine"))}">${esc(t("toolLine"))}</button>
+        <div class="pa-menu-wrap">
+          <button class="pa-btn" type="button" data-menu="line" title="${esc(t("titleLineMenu"))}">${esc(t("toolLines"))} ▾</button>
+          <div class="pa-flyout" data-flyout="line" hidden>
+            <button class="pa-btn" type="button" data-tool="line" title="${esc(t("titleLine"))}">${esc(t("toolLine"))}</button>
+            <button class="pa-btn" type="button" data-tool="arrow" title="${esc(t("titleArrow"))}">${esc(t("toolArrow"))}</button>
+            <button class="pa-btn" type="button" data-tool="doubleArrow" title="${esc(t("titleDoubleArrow"))}">${esc(t("toolDoubleArrow"))}</button>
+          </div>
+        </div>
         <button class="pa-btn" data-tool="text" title="${esc(t("titleText"))}">${esc(t("toolText"))}</button>
         <button class="pa-btn" data-tool="marker" title="${esc(t("titleMarker"))}">${esc(t("toolMarker"))}</button>
         <button class="pa-btn" data-tool="mosaic" title="${esc(t("titleMosaic"))}">${esc(t("toolMosaic"))}</button>
@@ -215,21 +231,39 @@
     return t("btnDelay", [String(STATE.captureDelay)]);
   }
 
+  const SHAPE_TOOLS = new Set(["rect", "circle", "ellipse"]);
+  const LINE_TOOLS = new Set(["line", "arrow", "doubleArrow"]);
+
   function onToolbarClick(e) {
     if (STATE.busy) return;
+
+    const menuBtn = e.target.closest("[data-menu]");
+    if (menuBtn) {
+      const name = menuBtn.dataset.menu;
+      const flyout = STATE.toolbar.querySelector(`[data-flyout="${name}"]`);
+      const open = flyout && !flyout.hasAttribute("hidden");
+      closeAllFlyouts();
+      if (flyout && !open) flyout.removeAttribute("hidden");
+      return;
+    }
+
     const toolBtn = e.target.closest("[data-tool]");
     if (toolBtn) {
       const tool = toolBtn.dataset.tool;
       setTool(tool);
+      closeAllFlyouts();
       removeTextInput();
       if (tool === "region") showToast(t("toastRegionHint"));
       if (tool === "mosaic") showToast(t("toastMosaicHint"));
       if (tool === "select") showToast(t("toastSelectHint"));
       if (tool === "marker") showToast(t("toastMarkerHint"));
-      if (tool === "line") showToast(t("toastLineHint"));
+      if (LINE_TOOLS.has(tool)) showToast(t("toastLineHint"));
+      if (SHAPE_TOOLS.has(tool)) showToast(t("toastShapeHint"));
       if (tool === "image") STATE.fileInput?.click();
       return;
     }
+
+    closeAllFlyouts();
 
     const colorBtn = e.target.closest("[data-color]");
     if (colorBtn) {
@@ -265,6 +299,12 @@
     if (action === "exit") stop();
   }
 
+  function closeAllFlyouts() {
+    STATE.toolbar?.querySelectorAll("[data-flyout]").forEach((el) => {
+      el.setAttribute("hidden", "");
+    });
+  }
+
   function cycleDelay() {
     const idx = DELAYS.indexOf(STATE.captureDelay);
     STATE.captureDelay = DELAYS[(idx + 1) % DELAYS.length];
@@ -274,15 +314,46 @@
 
   function onResize() {
     resizeCanvas();
-    redraw();
+    redraw(STATE.current);
+  }
+
+  function onScrollOrLayout() {
+    // Nested scrollers can grow the page; keep overlay covering the document.
+    const beforeW = STATE.overlayW;
+    const beforeH = STATE.overlayH;
+    layoutOverlaySize();
+    if (beforeW !== STATE.overlayW || beforeH !== STATE.overlayH) {
+      resizeCanvas();
+      redraw(STATE.current);
+    }
+  }
+
+  function layoutOverlaySize() {
+    const w = Math.max(
+      document.documentElement.scrollWidth,
+      document.body?.scrollWidth || 0,
+      window.innerWidth
+    );
+    const h = Math.max(
+      document.documentElement.scrollHeight,
+      document.body?.scrollHeight || 0,
+      window.innerHeight
+    );
+    STATE.overlayW = w;
+    STATE.overlayH = h;
+    if (STATE.root) {
+      STATE.root.style.width = `${w}px`;
+      STATE.root.style.height = `${h}px`;
+    }
   }
 
   function resizeCanvas() {
     const canvas = STATE.canvas;
     if (!canvas) return;
+    layoutOverlaySize();
     const dpr = Math.max(window.devicePixelRatio || 1, 1);
-    const w = window.innerWidth;
-    const h = window.innerHeight;
+    const w = STATE.overlayW || window.innerWidth;
+    const h = STATE.overlayH || window.innerHeight;
     canvas.width = Math.floor(w * dpr);
     canvas.height = Math.floor(h * dpr);
     canvas.style.width = `${w}px`;
@@ -290,8 +361,18 @@
     STATE.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
+  // Page coordinates so marks stick to content while the page scrolls.
   function pointFromEvent(e) {
-    return { x: e.clientX, y: e.clientY };
+    return { x: e.pageX, y: e.pageY };
+  }
+
+  function toViewportRect(shape) {
+    return {
+      x: shape.x - window.scrollX,
+      y: shape.y - window.scrollY,
+      w: shape.w,
+      h: shape.h
+    };
   }
 
   function onPointerDown(e) {
@@ -442,7 +523,11 @@
   }
 
   function onDblClick(e) {
-    if (["region", "mosaic", "image", "select", "marker", "line"].includes(STATE.tool)) {
+    if (
+      ["region", "mosaic", "image", "select", "marker", "line", "arrow", "doubleArrow", "circle", "ellipse", "rect"].includes(
+        STATE.tool
+      )
+    ) {
       return;
     }
     setTool("text");
@@ -453,8 +538,16 @@
     if (tool === "pen") {
       return { type: "pen", color: STATE.color, width: STATE.lineWidth, points: [{ ...start }] };
     }
-    if (tool === "rect") {
-      return { type: "rect", color: STATE.color, width: STATE.lineWidth, x: start.x, y: start.y, w: 0, h: 0 };
+    if (tool === "rect" || tool === "circle" || tool === "ellipse") {
+      return {
+        type: tool,
+        color: STATE.color,
+        width: STATE.lineWidth,
+        x: start.x,
+        y: start.y,
+        w: 0,
+        h: 0
+      };
     }
     if (tool === "highlight") {
       return { type: "highlight", color: STATE.color, x: start.x, y: start.y, w: 0, h: 0 };
@@ -470,11 +563,16 @@
         h: 0
       };
     }
-    if (tool === "arrow") {
-      return { type: "arrow", color: STATE.color, width: STATE.lineWidth, x1: start.x, y1: start.y, x2: start.x, y2: start.y };
-    }
-    if (tool === "line") {
-      return { type: "line", color: STATE.color, width: STATE.lineWidth, x1: start.x, y1: start.y, x2: start.x, y2: start.y };
+    if (tool === "arrow" || tool === "line" || tool === "doubleArrow") {
+      return {
+        type: tool,
+        color: STATE.color,
+        width: STATE.lineWidth,
+        x1: start.x,
+        y1: start.y,
+        x2: start.x,
+        y2: start.y
+      };
     }
     return null;
   }
@@ -484,14 +582,24 @@
       shape.points.push({ ...end });
       return;
     }
-    if (["rect", "region", "mosaic", "highlight"].includes(shape.type)) {
+    // Circle must stay a square anchored at the start corner.
+    // Using free bbox + min(w,h) makes the center "walk" while dragging.
+    if (shape.type === "circle") {
+      const side = Math.min(Math.abs(end.x - start.x), Math.abs(end.y - start.y));
+      shape.x = end.x < start.x ? start.x - side : start.x;
+      shape.y = end.y < start.y ? start.y - side : start.y;
+      shape.w = side;
+      shape.h = side;
+      return;
+    }
+    if (["rect", "ellipse", "region", "mosaic", "highlight"].includes(shape.type)) {
       shape.x = Math.min(start.x, end.x);
       shape.y = Math.min(start.y, end.y);
       shape.w = Math.abs(end.x - start.x);
       shape.h = Math.abs(end.y - start.y);
       return;
     }
-    if (shape.type === "arrow" || shape.type === "line") {
+    if (shape.type === "arrow" || shape.type === "line" || shape.type === "doubleArrow") {
       shape.x2 = end.x;
       shape.y2 = end.y;
     }
@@ -500,8 +608,10 @@
   function isMeaningful(shape) {
     if (!shape) return false;
     if (shape.type === "pen") return shape.points.length > 2;
-    if (["rect", "region", "mosaic", "highlight"].includes(shape.type)) return shape.w > 8 && shape.h > 8;
-    if (shape.type === "arrow" || shape.type === "line") {
+    if (["rect", "circle", "ellipse", "region", "mosaic", "highlight"].includes(shape.type)) {
+      return shape.w > 8 && shape.h > 8;
+    }
+    if (shape.type === "arrow" || shape.type === "line" || shape.type === "doubleArrow") {
       return Math.hypot(shape.x2 - shape.x1, shape.y2 - shape.y1) > 6;
     }
     if (shape.type === "text") return Boolean(shape.text?.trim());
@@ -513,7 +623,9 @@
   function redraw(preview) {
     const ctx = STATE.ctx;
     if (!ctx) return;
-    ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    const w = STATE.overlayW || window.innerWidth;
+    const h = STATE.overlayH || window.innerHeight;
+    ctx.clearRect(0, 0, w, h);
     for (const shape of STATE.shapes) drawShape(ctx, shape);
     if (preview) drawShape(ctx, preview);
     drawSelection(ctx);
@@ -559,6 +671,25 @@
       }
     } else if (shape.type === "rect") {
       ctx.strokeRect(shape.x, shape.y, shape.w, shape.h);
+    } else if (shape.type === "circle") {
+      const r = Math.min(shape.w, shape.h) / 2;
+      const cx = shape.x + shape.w / 2;
+      const cy = shape.y + shape.h / 2;
+      ctx.beginPath();
+      ctx.arc(cx, cy, Math.max(0, r), 0, Math.PI * 2);
+      ctx.stroke();
+    } else if (shape.type === "ellipse") {
+      ctx.beginPath();
+      ctx.ellipse(
+        shape.x + shape.w / 2,
+        shape.y + shape.h / 2,
+        Math.max(0, shape.w / 2),
+        Math.max(0, shape.h / 2),
+        0,
+        0,
+        Math.PI * 2
+      );
+      ctx.stroke();
     } else if (shape.type === "highlight") {
       ctx.globalAlpha = 0.35;
       ctx.fillRect(shape.x, shape.y, shape.w, shape.h);
@@ -568,7 +699,9 @@
       ctx.setLineDash([6, 4]);
       ctx.strokeRect(shape.x, shape.y, shape.w, shape.h);
     } else if (shape.type === "arrow") {
-      drawArrow(ctx, shape.x1, shape.y1, shape.x2, shape.y2, shape.width || 3);
+      drawArrow(ctx, shape.x1, shape.y1, shape.x2, shape.y2, shape.width || 3, false);
+    } else if (shape.type === "doubleArrow") {
+      drawArrow(ctx, shape.x1, shape.y1, shape.x2, shape.y2, shape.width || 3, true);
     } else if (shape.type === "line") {
       ctx.beginPath();
       ctx.moveTo(shape.x1, shape.y1);
@@ -596,7 +729,7 @@
     ctx.restore();
   }
 
-  function drawArrow(ctx, x1, y1, x2, y2, width) {
+  function drawArrow(ctx, x1, y1, x2, y2, width, bothEnds) {
     const dx = x2 - x1;
     const dy = y2 - y1;
     const len = Math.hypot(dx, dy) || 1;
@@ -607,10 +740,15 @@
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
+    drawArrowHead(ctx, x2, y2, ux, uy, head);
+    if (bothEnds) drawArrowHead(ctx, x1, y1, -ux, -uy, head);
+  }
+
+  function drawArrowHead(ctx, x, y, ux, uy, head) {
     ctx.beginPath();
-    ctx.moveTo(x2, y2);
-    ctx.lineTo(x2 - ux * head - uy * head * 0.45, y2 - uy * head + ux * head * 0.45);
-    ctx.lineTo(x2 - ux * head + uy * head * 0.45, y2 - uy * head - ux * head * 0.45);
+    ctx.moveTo(x, y);
+    ctx.lineTo(x - ux * head - uy * head * 0.45, y - uy * head + ux * head * 0.45);
+    ctx.lineTo(x - ux * head + uy * head * 0.45, y - uy * head - ux * head * 0.45);
     ctx.closePath();
     ctx.fill();
   }
@@ -640,8 +778,8 @@
     input.className = "pa-text-input";
     input.rows = 2;
     input.placeholder = t("textPlaceholder");
-    input.style.left = `${Math.min(point.x, window.innerWidth - 200)}px`;
-    input.style.top = `${Math.min(point.y, window.innerHeight - 80)}px`;
+    input.style.left = `${Math.max(0, point.x)}px`;
+    input.style.top = `${Math.max(0, point.y)}px`;
     input.style.color = STATE.color;
     const commit = () => {
       const text = input.value.trim();
@@ -724,7 +862,10 @@
       const file = item.getAsFile();
       if (!file) return;
       const dataUrl = await readFileAsDataUrl(file);
-      await addImageShape(dataUrl, { x: window.innerWidth * 0.2, y: window.innerHeight * 0.2 });
+      await addImageShape(dataUrl, {
+        x: window.scrollX + window.innerWidth * 0.2,
+        y: window.scrollY + window.innerHeight * 0.2
+      });
       setTool("select");
       showToast(t("toastImageAdded"));
       return;
@@ -736,7 +877,10 @@
     e.target.value = "";
     if (!file) return;
     const dataUrl = await readFileAsDataUrl(file);
-    await addImageShape(dataUrl, { x: window.innerWidth * 0.2, y: window.innerHeight * 0.2 });
+    await addImageShape(dataUrl, {
+      x: window.scrollX + window.innerWidth * 0.2,
+      y: window.scrollY + window.innerHeight * 0.2
+    });
     setTool("select");
     showToast(t("toastImageAdded"));
   }
@@ -783,7 +927,7 @@
     await nextFrame();
     try {
       const shot = await captureVisibleRaw();
-      const cropped = await cropDataUrl(shot, rectShape);
+      const cropped = await cropDataUrl(shot, toViewportRect(rectShape));
       const pixelated = await pixelateDataUrl(cropped, 12);
       await addImageShape(pixelated, { x: rectShape.x, y: rectShape.y, w: rectShape.w, h: rectShape.h }, "mosaicImage");
       showToast(t("toastMosaicDone"));
@@ -811,7 +955,7 @@
   async function captureRegion(rectShape, opts) {
     await runCapture({
       ...opts,
-      rect: { x: rectShape.x, y: rectShape.y, w: rectShape.w, h: rectShape.h }
+      rect: toViewportRect(rectShape)
     });
   }
 
@@ -1203,11 +1347,11 @@
       2: "rect",
       3: "highlight",
       4: "arrow",
-      5: "line",
-      6: "text",
-      7: "marker",
-      8: "mosaic",
-      9: "region",
+      5: "text",
+      6: "marker",
+      7: "mosaic",
+      8: "region",
+      9: "image",
       0: "select"
     };
     if (toolMap[e.key]) {
@@ -1217,11 +1361,9 @@
       if (tool === "mosaic") showToast(t("toastMosaicHint"));
       if (tool === "select") showToast(t("toastSelectHint"));
       if (tool === "marker") showToast(t("toastMarkerHint"));
-      if (tool === "line") showToast(t("toastLineHint"));
-    }
-    if (e.key.toLowerCase() === "i") {
-      setTool("image");
-      STATE.fileInput?.click();
+      if (LINE_TOOLS.has(tool)) showToast(t("toastLineHint"));
+      if (SHAPE_TOOLS.has(tool)) showToast(t("toastShapeHint"));
+      if (tool === "image") STATE.fileInput?.click();
     }
   }
 
@@ -1230,6 +1372,14 @@
     if (tool !== "select") STATE.selectedId = null;
     STATE.toolbar?.querySelectorAll("[data-tool]").forEach((el) => {
       el.classList.toggle("pa-active", el.dataset.tool === tool);
+    });
+    // Highlight parent group buttons when a submenu tool is active.
+    STATE.toolbar?.querySelectorAll("[data-menu]").forEach((el) => {
+      const group = el.dataset.menu;
+      const active =
+        (group === "shape" && SHAPE_TOOLS.has(tool)) ||
+        (group === "line" && LINE_TOOLS.has(tool));
+      el.classList.toggle("pa-active", active);
     });
     updateCursor();
     redraw();

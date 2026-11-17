@@ -15,34 +15,41 @@
 
 body {
   margin: 0;
-  width: 340px;
-  min-height: 280px;
+  width: 420px;
+  min-height: 300px;
   background:
     radial-gradient(120% 80% at 0% 0%, rgba(14, 116, 144, 0.12), transparent 55%),
     radial-gradient(100% 70% at 100% 0%, rgba(225, 29, 72, 0.08), transparent 50%),
     var(--bg);
   color: var(--ink);
-  font: 13px/1.45 "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  font: 13px/1.5 "Segoe UI", "Hiragino Sans", "PingFang SC", "Microsoft YaHei",
+    sans-serif;
 }
 
 .header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 14px 14px 8px;
+  gap: 14px;
+  padding: 16px 16px 10px;
+}
+
+.header > div {
+  min-width: 0;
+  flex: 1;
 }
 
 h1 {
   margin: 0;
-  font-size: 16px;
+  font-size: 17px;
   letter-spacing: 0.01em;
 }
 
 .sub {
-  margin: 2px 0 0;
+  margin: 4px 0 0;
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.4;
 }
 
 h2 {
@@ -58,10 +65,14 @@ h2 {
   appearance: none;
   border: 0;
   border-radius: 10px;
-  height: 34px;
-  padding: 0 12px;
+  min-height: 36px;
+  height: auto;
+  padding: 8px 14px;
   font: inherit;
+  font-size: 13px;
   font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
   background: #e2e8f0;
   color: var(--ink);
@@ -72,16 +83,20 @@ h2 {
 }
 
 .btn.primary {
+  flex-shrink: 0;
   background: var(--danger);
   color: #fff;
   box-shadow: 0 6px 16px rgba(225, 29, 72, 0.28);
+  font-size: 13px;
+  padding: 10px 16px;
 }
 
 .btn.ghost {
   background: transparent;
   color: var(--muted);
-  height: 28px;
-  padding: 0 8px;
+  min-height: 28px;
+  padding: 4px 8px;
+  font-size: 12px;
 }
 
 .btn.ghost:hover {
@@ -90,7 +105,7 @@ h2 {
 }
 
 .status {
-  margin: 0 14px 8px;
+  margin: 0 16px 8px;
   padding: 8px 10px;
   border-radius: 8px;
   background: #fff1f2;
@@ -99,15 +114,16 @@ h2 {
 }
 
 .hints {
-  margin: 0 14px 12px;
-  padding: 10px 12px;
+  margin: 0 16px 12px;
+  padding: 12px 14px;
   border-radius: 12px;
   background: var(--panel);
   border: 1px solid var(--line);
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.5;
   display: grid;
-  gap: 4px;
+  gap: 6px;
   box-shadow: var(--shadow);
 }
 
@@ -122,20 +138,21 @@ kbd {
 }
 
 .history {
-  padding: 0 14px 14px;
+  padding: 0 16px 16px;
 }
 
 .history-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 8px;
   margin-bottom: 8px;
 }
 
 .history-list {
   display: grid;
   gap: 8px;
-  max-height: 320px;
+  max-height: 340px;
   overflow: auto;
 }
 
@@ -203,13 +220,15 @@ kbd {
 }
 
 .card .actions button {
-  height: 26px;
-  padding: 0 8px;
+  min-height: 26px;
+  height: auto;
+  padding: 4px 8px;
   border-radius: 7px;
   border: 0;
   background: #e2e8f0;
   font-size: 11px;
   font-weight: 700;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -222,4 +241,5 @@ kbd {
   margin: 8px 0 0;
   color: var(--muted);
   font-size: 12px;
+  line-height: 1.5;
 }

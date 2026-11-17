@@ -1,113 +1,124 @@
 {
   "extName": { "message": "PageAnnotate" },
   "extDesc": {
-    "message": "ページ注釈：ハイライト/モザイク/番号/直線/画像、範囲キャプチャとページ全体のスクロール撮影、遅延。日英中。"
+    "message": "Webページに書き込んで、スクリーンショットを撮影。ハイライト、モザイク、番号、図形、画像の挿入に対応。範囲指定・ページ全体の撮影やタイマー撮影も。日本語・英語・中国語対応。"
   },
   "actionTitle": { "message": "PageAnnotate" },
-  "cmdToggle": { "message": "注釈の開始 / 終了" },
-  "popupSub": { "message": "注釈 · キャプチャ · コピー" },
-  "btnStart": { "message": "注釈開始" },
+  "cmdToggle": { "message": "書き込みモードの開始・終了" },
+  "popupSub": { "message": "注釈・キャプチャ・コピー" },
+  "btnStart": { "message": "注釈を開始" },
   "btnClear": { "message": "クリア" },
-  "hintShortcut": { "message": "Alt+Shift+A で注釈切替" },
+  "hintShortcut": { "message": "Alt+Shift+A で注釈モードを切替" },
   "hintTools": {
-    "message": "コピー=クリップボードのみ · 保存=ファイルのみ · 全体スクロール=縦長"
+    "message": "コピー＝クリップボードのみ／保存＝画像ファイル／全体スクロール＝長距離撮影"
   },
-  "historyTitle": { "message": "ローカル履歴" },
+  "historyTitle": { "message": "撮影履歴" },
   "historyEmpty": {
-    "message": "まだありません。コピー／保存／全体スクロール後にここに残ります。"
+    "message": "まだありません。コピー・保存・全体スクロール後にここに表示されます。"
   },
   "btnCopy": { "message": "コピー" },
   "btnOpen": { "message": "開く" },
   "btnDelete": { "message": "削除" },
-  "thumbAlt": { "message": "キャプチャプレビュー" },
+  "thumbAlt": { "message": "撮影した画像のプレビュー" },
   "noImage": { "message": "画像なし" },
   "untitled": { "message": "無題のページ" },
   "copied": { "message": "クリップボードにコピーしました" },
   "copyFailed": { "message": "コピーに失敗しました" },
-  "startFailed": { "message": "起動に失敗しました" },
-  "errNoTab": { "message": "利用できるタブがありません" },
+  "startFailed": { "message": "書き込みモードを開始できませんでした" },
+  "errNoTab": { "message": "操作できるタブがありません" },
   "errBadPage": {
-    "message": "このページでは注釈できません（内部ページやストアなど）"
+    "message": "このページには書き込めません（ブラウザの設定ページや拡張機能ストアなど）"
   },
-  "errNoTabLocate": { "message": "現在のタブを特定できません" },
+  "errNoTabLocate": { "message": "現在のタブを取得できませんでした" },
   "toolPen": { "message": "ペン" },
-  "toolRect": { "message": "矩形" },
+  "toolShape": { "message": "図形" },
+  "toolLines": { "message": "線" },
+  "toolRect": { "message": "四角形" },
+  "toolCircle": { "message": "円" },
+  "toolEllipse": { "message": "楕円" },
   "toolHighlight": { "message": "ハイライト" },
   "toolArrow": { "message": "矢印" },
+  "toolDoubleArrow": { "message": "双方向矢印" },
   "toolLine": { "message": "直線" },
-  "toolText": { "message": "文字" },
+  "toolText": { "message": "テキスト" },
   "toolMarker": { "message": "番号" },
   "toolMosaic": { "message": "モザイク" },
-  "toolRegion": { "message": "範囲" },
+  "toolRegion": { "message": "範囲指定" },
   "toolImage": { "message": "画像" },
   "toolSelect": { "message": "選択" },
-  "titlePen": { "message": "ペンで描画" },
-  "titleRect": { "message": "矩形を描画" },
+  "titlePen": { "message": "ペンで描く" },
+  "titleShapeMenu": { "message": "図形を選択（四角形・円・楕円）" },
+  "titleLineMenu": { "message": "線を選択（直線・矢印・双方向矢印）" },
+  "titleRect": { "message": "四角形を描く" },
+  "titleCircle": { "message": "円を描く" },
+  "titleEllipse": { "message": "楕円を描く" },
   "titleHighlight": { "message": "ハイライト" },
-  "titleArrow": { "message": "矢印を描画" },
-  "titleLine": { "message": "直線を描画" },
+  "titleArrow": { "message": "矢印を描く" },
+  "titleDoubleArrow": { "message": "双方向矢印を描く" },
+  "titleLine": { "message": "直線を引く" },
   "titleText": { "message": "テキストを追加" },
-  "titleMarker": { "message": "番号マーカーを配置" },
-  "titleMosaic": { "message": "モザイク（ぼかし）" },
-  "titleRegion": { "message": "範囲を選んでキャプチャ" },
-  "titleImage": { "message": "画像を挿入（Ctrl+Vでも可）" },
-  "titleSelect": { "message": "選択して移動・リサイズ" },
+  "titleMarker": { "message": "番号付きマーカーを追加" },
+  "titleMosaic": { "message": "指定した範囲にモザイクをかける" },
+  "titleRegion": { "message": "範囲を指定して撮影" },
+  "titleImage": { "message": "画像を挿入（Ctrl+V でも貼り付けできます）" },
+  "titleSelect": { "message": "選択して移動・サイズ変更" },
   "btnUndo": { "message": "元に戻す" },
   "btnRedo": { "message": "やり直す" },
-  "btnClearShort": { "message": "全消去" },
+  "btnClearShort": { "message": "すべて消去" },
   "btnDownload": { "message": "保存" },
-  "btnLong": { "message": "全体スクロール" },
-  "btnDelay": { "message": "遅延 $1秒" },
+  "btnLong": { "message": "ページ全体" },
+  "btnDelay": { "message": "タイマー $1秒" },
   "btnExit": { "message": "終了" },
   "titleUndo": { "message": "元に戻す" },
   "titleRedo": { "message": "やり直す" },
-  "titleClear": { "message": "注釈をすべて消去" },
-  "titleCopy": { "message": "表示中の画面をクリップボードへコピー（保存しない）" },
-  "titleDownload": { "message": "表示中の画面をファイル保存（コピーしない）" },
-  "titleLong": { "message": "ページを自動スクロールして全体を撮影" },
-  "titleDelay": { "message": "キャプチャ遅延（0/2/3秒を切替）" },
-  "titleExit": { "message": "注釈を終了" },
+  "titleClear": { "message": "書き込みをすべて消去" },
+  "titleCopy": { "message": "表示範囲を撮影してクリップボードにコピー" },
+  "titleDownload": { "message": "表示範囲を撮影して画像ファイルに保存" },
+  "titleLong": { "message": "自動スクロールでページ全体を撮影" },
+  "titleDelay": { "message": "撮影までの待ち時間を切り替え（0秒・2秒・3秒）" },
+  "titleExit": { "message": "書き込みモードを終了" },
   "titleWidth": { "message": "線の太さ" },
-  "widthThin": { "message": "細" },
-  "widthMid": { "message": "中" },
-  "widthThick": { "message": "太" },
+  "widthThin": { "message": "細い" },
+  "widthMid": { "message": "標準" },
+  "widthThick": { "message": "太い" },
   "notePlaceholder": {
-    "message": "質問 / 説明（履歴に一緒に保存）"
+    "message": "質問やメモを入力（画像と一緒に履歴に保存されます）"
   },
   "textPlaceholder": {
-    "message": "文字入力、Enter確定、Shift+Enter改行、Esc取消"
+    "message": "テキストを入力（Enter で確定、Shift+Enter で改行、Esc でキャンセル）"
   },
   "toastStart": {
-    "message": "コピー≠保存。「全体スクロール」はページを自動でスクロールします"
+    "message": "書き込みはページと一緒にスクロールします。「コピー」はクリップボードへ、「保存」はファイルに保存します。"
   },
-  "toastCopied": { "message": "クリップボードにコピーしました（保存なし）" },
-  "toastDownload": { "message": "ダウンロードを開始しました（コピーなし）" },
-  "toastCaptureFail": { "message": "キャプチャに失敗しました" },
-  "toastRegionHint": { "message": "ドラッグして範囲を選択" },
-  "toastMosaicHint": { "message": "ドラッグしてモザイク範囲を選択" },
-  "toastSelectHint": { "message": "ドラッグで移動、角でリサイズ、Deleteで削除" },
-  "toastMarkerHint": { "message": "クリックして番号を配置" },
-  "toastLineHint": { "message": "ドラッグして直線を描画" },
-  "toastImageAdded": { "message": "画像を挿入しました。「選択」で移動できます" },
-  "toastMosaicDone": { "message": "モザイクを追加しました" },
+  "toastCopied": { "message": "クリップボードにコピーしました" },
+  "toastDownload": { "message": "画像のダウンロードを開始しました" },
+  "toastCaptureFail": { "message": "撮影に失敗しました" },
+  "toastRegionHint": { "message": "ドラッグして撮影範囲を指定してください" },
+  "toastMosaicHint": { "message": "ドラッグしてモザイクをかける範囲を指定してください" },
+  "toastSelectHint": { "message": "ドラッグで移動、四隅のドラッグでサイズ変更、Delete キーで削除できます" },
+  "toastMarkerHint": { "message": "クリックして番号付きマーカーを追加してください" },
+  "toastLineHint": { "message": "ドラッグして線を引いてください" },
+  "toastShapeHint": { "message": "ドラッグして図形を描いてください" },
+  "toastImageAdded": { "message": "画像を挿入しました。「選択」で移動やサイズ変更ができます" },
+  "toastMosaicDone": { "message": "モザイクをかけました" },
   "toastPasteNoImage": { "message": "クリップボードに画像がありません" },
-  "toastRegionTooSmall": { "message": "範囲が小さすぎます。やり直してください" },
-  "toastDelay": { "message": "$1秒後にキャプチャ…" },
+  "toastRegionTooSmall": { "message": "選択範囲が小さすぎます。もう一度ドラッグしてください" },
+  "toastDelay": { "message": "$1秒後に撮影します…" },
   "toastLongStart": {
-    "message": "ページ全体のスクロール撮影を開始します（制限回避のため少し遅くなります）…"
+    "message": "ページ全体の撮影を開始します。完了までしばらくお待ちください…"
   },
-  "toastLongProgress": { "message": "スクロール撮影中… $1%" },
-  "toastLongStitch": { "message": "画像を結合しています…" },
-  "toastLongRetry": { "message": "撮影頻度制限のため再試行中（$1）…" },
+  "toastLongProgress": { "message": "ページ全体を撮影しています… $1%" },
+  "toastLongStitch": { "message": "撮影した画像をつなぎ合わせています…" },
+  "toastLongRetry": { "message": "撮影回数の上限に達したため、再試行しています（$1）…" },
   "toastLongQuota": {
-    "message": "ブラウザの撮影回数制限です。数秒待ってから「全体スクロール」を再度押してください"
+    "message": "ブラウザの撮影回数の上限に達しました。数秒待ってから、もう一度「ページ全体」を押してください"
   },
   "toastLongDone": {
-    "message": "全体キャプチャ完了：保存・コピー済み。新しいタブで原寸を開きました"
+    "message": "ページ全体の撮影が完了しました。画像を保存・コピーし、元のサイズで新しいタブに開きました"
   },
   "toastLongShort": {
-    "message": "ほぼ1画面分：保存・コピー済み。新しいタブで開きました"
+    "message": "ページが短いため、表示範囲を撮影しました。画像を保存・コピーし、新しいタブに開きました"
   },
-  "toastLongFail": { "message": "スクロール撮影に失敗しました" },
-  "toastDeleted": { "message": "選択を削除しました" }
+  "toastLongFail": { "message": "ページ全体の撮影に失敗しました" },
+  "toastDeleted": { "message": "選択した項目を削除しました" }
 }
