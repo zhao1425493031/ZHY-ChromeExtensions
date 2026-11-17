@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WordBank</title>
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body>
+    <header class="top">
+      <div>
+        <h1 id="title">WordBank</h1>
+        <p class="sub" id="count"></p>
+      </div>
+      <div class="toolbar">
+        <button id="btn-excel" class="btn" type="button" data-i18n="btnExportExcel">导出 Excel</button>
+        <button id="btn-pdf" class="btn" type="button" data-i18n="btnExportPdf">导出 PDF (A4)</button>
+      </div>
+    </header>
+    <main class="layout">
+      <aside class="list-pane">
+        <input id="search" class="search" type="search" placeholder="Search" />
+        <div id="word-list" class="word-list"></div>
+      </aside>
+      <section id="detail" class="detail-pane"></section>
+    </main>
+    <script src="../lib/display.js"></script>
+    <script src="../lib/grammar-format.js"></script>
+    <script src="viewer.js"></script>
+  </body>
+</html>

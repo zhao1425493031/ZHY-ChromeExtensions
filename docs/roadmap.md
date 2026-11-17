@@ -90,15 +90,25 @@
 | `ClipVault` | 本机剪贴板历史（隐私优先） | 系统级竞品多，差异化难 |
 | `ChangeWatch` | 指定页面变更监控提醒 | 有需求，但后台/通知成本高，适合后期 |
 
-### 已开工：`WebToMarkdown`（网页转 Markdown） ✅ v0.2.0
+### 已开工：`WebToMarkdown`（网页转 Markdown） ✅ v0.2.4
 
 | 项 | 内容 |
 |----|------|
 | 文件夹 | `WebToMarkdown/` |
-| 状态 | **v0.2.0 可用**（正文/选区/右键/YAML/去重标题/本地历史/MD预览） |
+| 状态 | **v0.2.4 可用**（正文/选区/右键/YAML/历史/MD·预览·分栏） |
 | 一句话 | 任意页面正文或划选内容 → 干净 Markdown |
 | 自用场景 | 存笔记、写文档、归档文章 |
 | 后续 | 站点选择器、站点选项记忆 |
+
+### 已开工：`WordBank`（英日词库） ✅ v0.2.0
+
+| 项 | 内容 |
+|----|------|
+| 文件夹 | `WordBank/` |
+| 状态 | **v0.2.0 可用**（中英日释义 / 左右布局 / 新标签 / Excel·A4 PDF） |
+| 一句话 | 选中英语或日语 → 中英日释义、发音、变形、接续 |
+| 自用场景 | 读文档、学语言时随手存词 |
+| 后续 | 离线词典、复习队列、可选 AI 补全 |
 
 ---
 
@@ -111,9 +121,12 @@ ZHY-ChromeExtensions/
 │   └── roadmap.md          # 本文件
 ├── ColorPicker/            # 搁置，不开发
 ├── PageAnnotate/           # P0
-├── WorkSession/            # P1
-└── EnvSwitch/              # P2（按需）
+├── WebToMarkdown/          # 网页转 MD
+├── WordBank/               # 英日词库
+├── WorkSession/            # 规划
+└── EnvSwitch/              # 按需
 ```
+
 
 每个插件文件夹最低包含：
 
@@ -142,8 +155,9 @@ PageAnnotate/
 ## 六、下一步
 
 1. ~~`PageAnnotate` MVP → v0.4~~ ✅（含长截图/编号/延时）  
-2. ~~`WebToMarkdown` MVP → v0.2~~ ✅（右键 / YAML / 历史 / 去重标题）  
-3. 可选：PageAnnotate 云端分享，或按自用痛点开下一个  
+2. ~~`WebToMarkdown` MVP → v0.2~~ ✅  
+3. ~~`WordBank` MVP → v0.1~~ ✅（英日划词 + 自动注释）  
+4. 可选：复习队列 / 离线词典，或按自用痛点开下一个  
 
 ---
 

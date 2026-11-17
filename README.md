@@ -28,6 +28,7 @@ ZHY-ChromeExtensions/
 |--------|------|------|
 | [`PageAnnotate`](PageAnnotate/) | 批注 / 整页滚动长截图 / 复制≠下载 / 中英日 | **v0.4.9** |
 | [`WebToMarkdown`](WebToMarkdown/) | 网页→Markdown · 右键/YAML/历史 · MD/预览/分栏 | **v0.2.4** |
+| [`WordBank`](WordBank/) | 英日词库 · 显示语言设定 · Excel/PDF(A4) | **v0.2.2** |
 | `ColorPicker` | 颜色提取（页面色板 + 吸管） | **不做**（市场已饱和） |
 | `WorkSession` | 按项目会话（规划） | 待开工 |
 | `EnvSwitch` | 多环境切换（规划） | 待开工 |

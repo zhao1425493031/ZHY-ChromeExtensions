@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WordBank</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="brand">
+        <h1 data-i18n="extName">WordBank</h1>
+        <p class="sub" data-i18n="popupSub">英日词库 · 中英日释义</p>
+      </div>
+      <div class="header-actions">
+        <button id="btn-open-tab" class="btn quiet" type="button" data-i18n="btnOpenTab">
+          新标签
+        </button>
+        <button id="btn-add" class="btn primary" type="button" data-i18n="btnAddSelection">
+          收录选区
+        </button>
+      </div>
+    </header>
+
+    <section class="toolbar">
+      <input
+        id="search"
+        class="search"
+        type="search"
+        data-i18n-placeholder="searchPlaceholder"
+        placeholder="搜索词条 / 释义"
+      />
+      <div class="row">
+        <div class="filters" role="tablist">
+          <button id="filter-all" class="chip active" type="button" data-filter="all" data-i18n="filterAll">
+            全部
+          </button>
+          <button id="filter-en" class="chip" type="button" data-filter="en" data-i18n="filterEn">
+            英语
+          </button>
+          <button id="filter-ja" class="chip" type="button" data-filter="ja" data-i18n="filterJa">
+            日语
+          </button>
+        </div>
+        <div class="export-actions">
+          <button id="btn-excel" class="btn quiet" type="button" data-i18n="btnExportExcel">
+            Excel
+          </button>
+          <button id="btn-pdf" class="btn quiet" type="button" data-i18n="btnExportPdf">
+            PDF
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <p id="status" class="status" hidden></p>
+
+    <section class="layout">
+      <aside class="list-pane">
+        <div id="word-list" class="word-list"></div>
+        <p id="empty" class="empty" data-i18n="emptyList">
+          还没有词条。在网页划词后右键加入，或点「收录选区」。
+        </p>
+      </aside>
+      <section id="detail" class="detail-pane">
+        <p class="detail-placeholder" data-i18n="hintPick">选择左侧词条查看词卡</p>
+      </section>
+    </section>
+
+    <footer class="footer">
+      <div class="hints">
+        <span data-i18n="hintShortcut">Alt+Shift+W 收录当前选区</span>
+      </div>
+      <button id="btn-clear" class="btn quiet danger-text" type="button" data-i18n="btnClear">
+        清空
+      </button>
+    </footer>
+
+    <script src="../lib/display.js"></script>
+    <script src="../lib/grammar-format.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
