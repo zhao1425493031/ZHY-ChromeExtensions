@@ -252,7 +252,7 @@
   el.excel.addEventListener("click", async () => {
     await chrome.runtime.sendMessage({
       type: "EXPORT_DOWNLOAD",
-      format: "xls",
+      format: "xlsx",
       words: filtered(),
     });
   });

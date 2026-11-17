@@ -353,23 +353,39 @@
   });
 
   el.excel.addEventListener("click", async () => {
-    const res = await chrome.runtime.sendMessage({
-      type: "EXPORT_DOWNLOAD",
-      format: "xls",
-      words: filteredWords(),
-    });
-    if (res?.ok) setStatus(t("statusExportedExcel"));
-    else setStatus(t("statusFailed"), true);
+    try {
+      const res = await chrome.runtime.sendMessage({
+        type: "EXPORT_DOWNLOAD",
+        format: "xlsx",
+        words: filteredWords(),
+      });
+      if (res?.ok) setStatus(t("statusExportedExcel"));
+      else
+        setStatus(
+          (res?.error ? String(res.error) : "") || t("statusFailed"),
+          true
+        );
+    } catch (err) {
+      setStatus(String(err && err.message ? err.message : err) || t("statusFailed"), true);
+    }
   });
 
   el.pdf.addEventListener("click", async () => {
-    const res = await chrome.runtime.sendMessage({
-      type: "EXPORT_DOWNLOAD",
-      format: "pdf",
-      words: filteredWords(),
-    });
-    if (res?.ok) setStatus(t("statusExportedPdf"));
-    else setStatus(t("statusFailed"), true);
+    try {
+      const res = await chrome.runtime.sendMessage({
+        type: "EXPORT_DOWNLOAD",
+        format: "pdf",
+        words: filteredWords(),
+      });
+      if (res?.ok) setStatus(t("statusExportedPdf"));
+      else
+        setStatus(
+          (res?.error ? String(res.error) : "") || t("statusFailed"),
+          true
+        );
+    } catch (err) {
+      setStatus(String(err && err.message ? err.message : err) || t("statusFailed"), true);
+    }
   });
 
   el.clear.addEventListener("click", async () => {

@@ -582,30 +582,55 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
         const settings = await WordDisplay.loadSettings();
         const format = msg.format || "csv";
         let content = "";
-        let filename = "wordbank-export.csv";
         let mime = "text/csv;charset=utf-8";
 
-        if (format === "xls") {
-          content = WordExport.toExcelXml(words, settings.displayLang);
-          filename = "wordbank-export.xls";
-          mime = "application/vnd.ms-excel;charset=utf-8";
-        } else if (format === "pdf") {
-          content = WordExport.toA4Html(words, "WordBank", settings);
-          filename = "wordbank-a4.html";
-          mime = "text/html;charset=utf-8";
-        } else {
-          content = WordExport.toCsv(words, settings.displayLang);
-          filename = "wordbank-export.csv";
-          mime = "text/csv;charset=utf-8";
+        const stamp = (() => {
+          const d = new Date();
+          const p = (n) => String(n).padStart(2, "0");
+          return (
+            d.getFullYear() +
+            p(d.getMonth() + 1) +
+            p(d.getDate()) +
+            "_" +
+            p(d.getHours()) +
+            p(d.getMinutes()) +
+            p(d.getSeconds())
+          );
+        })();
+
+        if (format === "xls" || format === "xlsx") {
+          let themeXml = "";
+          try {
+            const themeRes = await fetch(
+              chrome.runtime.getURL("assets/xlsx-theme1.xml")
+            );
+            if (themeRes.ok) themeXml = await themeRes.text();
+          } catch {
+            themeXml = "";
+          }
+          const bytes = WordExport.toXlsxBytes(words, settings.displayLang, {
+            themeXml: themeXml || undefined,
+          });
+          const filename = `wordbank_${stamp}.xlsx`;
+          mime =
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+          // MV3 service worker: createObjectURL is unreliable / unavailable.
+          // data:base64 works with chrome.downloads (xlsx itself is now Excel-valid).
+          const b64 = WordExport.bytesToBase64(bytes);
+          const downloadId = await chrome.downloads.download({
+            url: "data:" + mime + ";base64," + b64,
+            filename,
+            saveAs: true,
+          });
+          if (downloadId == null) {
+            throw new Error("download_rejected");
+          }
+          sendResponse({ ok: true, downloadId });
+          return;
         }
 
-        const blobUrl =
-          "data:" +
-          mime +
-          "," +
-          encodeURIComponent(content);
-
         if (format === "pdf") {
+          content = WordExport.toA4Html(words, "WordBank", settings);
           // Open A4 print page in a tab (Save as PDF from print dialog)
           const id = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
           const key = `print:${id}`;
@@ -619,8 +644,11 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
           return;
         }
 
+        content = WordExport.toCsv(words, settings.displayLang);
+        const filename = `wordbank_${stamp}.csv`;
+        mime = "text/csv;charset=utf-8";
         await chrome.downloads.download({
-          url: blobUrl,
+          url: "data:" + mime + "," + encodeURIComponent(content),
           filename,
           saveAs: true,
         });
