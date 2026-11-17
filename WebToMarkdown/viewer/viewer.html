@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WebToMarkdown</title>
+    <link rel="stylesheet" href="viewer.css" />
+  </head>
+  <body class="mode-md">
+    <header class="top">
+      <div class="brand">
+        <h1 id="doc-title">WebToMarkdown</h1>
+        <a id="doc-source" class="source" href="#" target="_blank" rel="noopener" hidden></a>
+      </div>
+      <div class="toolbar">
+        <div class="view-toggle" role="tablist" aria-label="view">
+          <button id="tab-md" class="tab active" type="button" role="tab" data-mode="md" data-i18n="tabSource">
+            MD
+          </button>
+          <button id="tab-preview" class="tab" type="button" role="tab" data-mode="preview" data-i18n="tabRender">
+            预览
+          </button>
+          <button id="tab-split" class="tab" type="button" role="tab" data-mode="split" data-i18n="tabSplit">
+            分栏
+          </button>
+        </div>
+        <label id="sync-wrap" class="sync-check" hidden>
+          <input id="opt-sync" type="checkbox" checked />
+          <span data-i18n="optSyncScroll">滚动同步</span>
+        </label>
+        <button id="btn-copy" class="btn" type="button" data-i18n="btnCopy">复制</button>
+      </div>
+    </header>
+    <p id="status" class="status" hidden></p>
+    <main id="workspace" class="workspace">
+      <section class="pane pane-md">
+        <div class="pane-label" data-i18n="tabSource">MD</div>
+        <textarea id="md" class="md" spellcheck="false"></textarea>
+      </section>
+      <div id="divider" class="divider" role="separator" aria-orientation="vertical"></div>
+      <section class="pane pane-html">
+        <div class="pane-label" data-i18n="tabRender">预览</div>
+        <article id="html" class="html"></article>
+      </section>
+    </main>
+    <script src="../lib/md2html.js"></script>
+    <script src="viewer.js"></script>
+  </body>
+</html>

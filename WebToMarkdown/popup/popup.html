@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WebToMarkdown</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div>
+        <h1 data-i18n="extName">WebToMarkdown</h1>
+        <p class="sub" data-i18n="popupSub">正文提取 · 干净 Markdown</p>
+      </div>
+      <button id="btn-convert" class="btn primary" type="button" data-i18n="btnConvert">
+        转换当前页
+      </button>
+    </header>
+
+    <section class="options">
+      <label class="check">
+        <input id="opt-selection" type="checkbox" />
+        <span data-i18n="optSelection">仅转换选中内容</span>
+      </label>
+      <label class="check">
+        <input id="opt-meta" type="checkbox" checked />
+        <span data-i18n="optMeta">附带标题与来源链接</span>
+      </label>
+      <label class="check">
+        <input id="opt-yaml" type="checkbox" />
+        <span data-i18n="optYaml">YAML front matter</span>
+      </label>
+      <label class="check">
+        <input id="opt-images" type="checkbox" checked />
+        <span data-i18n="optImages">保留图片</span>
+      </label>
+    </section>
+
+    <p id="status" class="status" hidden></p>
+
+    <section class="preview-wrap">
+      <div class="preview-head">
+        <h2 data-i18n="mdTitle">Markdown</h2>
+        <div class="actions">
+          <button id="btn-preview" class="btn primary-soft" type="button" data-i18n="btnPreview" disabled>
+            预览
+          </button>
+          <button id="btn-copy" class="btn" type="button" data-i18n="btnCopy" disabled>
+            复制
+          </button>
+          <button id="btn-download" class="btn" type="button" data-i18n="btnDownload" disabled>
+            下载 .md
+          </button>
+        </div>
+      </div>
+      <textarea
+        id="preview"
+        class="preview"
+        spellcheck="false"
+        data-i18n-placeholder="previewEmpty"
+        placeholder="点「转换当前页」生成 Markdown。"
+      ></textarea>
+    </section>
+
+    <section class="history">
+      <div class="history-head">
+        <h2 data-i18n="historyTitle">本地历史</h2>
+        <button id="btn-clear-history" class="btn ghost" type="button" data-i18n="btnClearHistory">
+          清空
+        </button>
+      </div>
+      <div id="history-list" class="history-list"></div>
+      <p id="history-empty" class="empty" data-i18n="historyEmpty">
+        转换或右键复制后会出现在这里。
+      </p>
+    </section>
+
+    <section class="hints">
+      <div data-i18n="hintShortcut">Alt+Shift+M 直接复制当前页 Markdown</div>
+      <div data-i18n="hintContext">右键：选区 / 整页 → 转为 Markdown 并复制</div>
+      <div data-i18n="hintPreview">点「预览」在新标签左右对照查看</div>
+      <div data-i18n="hintTip">优先提取 article / main；复杂站点可先划选再转</div>
+    </section>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
